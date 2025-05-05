@@ -11,7 +11,57 @@
 		6B345EA32DBEA30300934607 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B345EA22DBEA30300934607 /* ContentView.swift */; };
 		6B345EA52DBEA30500934607 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6B345EA42DBEA30500934607 /* Assets.xcassets */; };
 		6B345EA82DBEA30500934607 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6B345EA72DBEA30500934607 /* Preview Assets.xcassets */; };
+		6B345EB62DBEB28400934607 /* OneThingIntentExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B345EB52DBEB28400934607 /* OneThingIntentExtension.swift */; };
+		6B345EB82DBEB28400934607 /* OneThingIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B345EB72DBEB28400934607 /* OneThingIntent.swift */; };
+		6B345EBC2DBEB28400934607 /* OneThingIntent.appex in Embed ExtensionKit Extensions */ = {isa = PBXBuildFile; fileRef = 6B345EB32DBEB28400934607 /* OneThingIntent.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		6B345EC82DBEB29F00934607 /* OpenOneThingIntentExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B345EC72DBEB29F00934607 /* OpenOneThingIntentExtension.swift */; };
+		6B345ECE2DBEB29F00934607 /* OpenOneThingIntent.appex in Embed ExtensionKit Extensions */ = {isa = PBXBuildFile; fileRef = 6B345EC52DBEB29E00934607 /* OpenOneThingIntent.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		6B345ED62DBEB53600934607 /* NavigationModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B345ED52DBEB53600934607 /* NavigationModel.swift */; };
+		6B345ED72DBEB56D00934607 /* NavigationModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B345ED52DBEB53600934607 /* NavigationModel.swift */; };
+		6B345ED82DBEB56D00934607 /* NavigationModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B345ED52DBEB53600934607 /* NavigationModel.swift */; };
+		6B345ED92DBEBB2400934607 /* OpenOneThingIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B345EC92DBEB29F00934607 /* OpenOneThingIntent.swift */; };
+		6B345EDB2DBEBC5100934607 /* OpenOneThingIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B345EC92DBEB29F00934607 /* OpenOneThingIntent.swift */; };
+		6B345EE22DBEC16F00934607 /* AppStateManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B345EDF2DBEC16F00934607 /* AppStateManager.swift */; };
+		6B345EE32DBEC16F00934607 /* GPTVisionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B345EE02DBEC16F00934607 /* GPTVisionService.swift */; };
+		6B345EE62DBEC3AB00934607 /* OneThingPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B345EE52DBEC3AB00934607 /* OneThingPickerView.swift */; };
+		6B5E281B2DC4D75500A728E2 /* OneThingGuardModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B5E281A2DC4D75500A728E2 /* OneThingGuardModel.swift */; };
+		6B5E281E2DC4E0F700A728E2 /* OneThingIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B345EB72DBEB28400934607 /* OneThingIntent.swift */; };
+		6B9F8BD42DC7E9510093FE2F /* CameraView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B9F8BD32DC7E9510093FE2F /* CameraView.swift */; };
+		6B9F8BD62DC8C5E00093FE2F /* ScanningView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B9F8BD52DC8C5E00093FE2F /* ScanningView.swift */; };
+		6B9F8BD82DC9349C0093FE2F /* ResultsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B9F8BD72DC9349C0093FE2F /* ResultsView.swift */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		6B345EBA2DBEB28400934607 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6B345E952DBEA30200934607 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 6B345EB22DBEB28400934607;
+			remoteInfo = OneThingIntent;
+		};
+		6B345ECC2DBEB29F00934607 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6B345E952DBEA30200934607 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 6B345EC42DBEB29E00934607;
+			remoteInfo = OpenOneThingIntent;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		6B345EC02DBEB28400934607 /* Embed ExtensionKit Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "$(EXTENSIONS_FOLDER_PATH)";
+			dstSubfolderSpec = 16;
+			files = (
+				6B345ECE2DBEB29F00934607 /* OpenOneThingIntent.appex in Embed ExtensionKit Extensions */,
+				6B345EBC2DBEB28400934607 /* OneThingIntent.appex in Embed ExtensionKit Extensions */,
+			);
+			name = "Embed ExtensionKit Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		6B345E9D2DBEA30300934607 /* OneThing.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OneThing.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -19,10 +69,44 @@
 		6B345EA22DBEA30300934607 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		6B345EA42DBEA30500934607 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		6B345EA72DBEA30500934607 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		6B345EAE2DBEB1A700934607 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		6B345EB32DBEB28400934607 /* OneThingIntent.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.extensionkit-extension"; includeInIndex = 0; path = OneThingIntent.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		6B345EB52DBEB28400934607 /* OneThingIntentExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OneThingIntentExtension.swift; sourceTree = "<group>"; };
+		6B345EB72DBEB28400934607 /* OneThingIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OneThingIntent.swift; sourceTree = "<group>"; };
+		6B345EB92DBEB28400934607 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		6B345EC52DBEB29E00934607 /* OpenOneThingIntent.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.extensionkit-extension"; includeInIndex = 0; path = OpenOneThingIntent.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		6B345EC72DBEB29F00934607 /* OpenOneThingIntentExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenOneThingIntentExtension.swift; sourceTree = "<group>"; };
+		6B345EC92DBEB29F00934607 /* OpenOneThingIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenOneThingIntent.swift; sourceTree = "<group>"; };
+		6B345ECB2DBEB29F00934607 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		6B345ED22DBEB45400934607 /* OneThing.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = OneThing.entitlements; sourceTree = "<group>"; };
+		6B345ED32DBEB47B00934607 /* OneThingIntent.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = OneThingIntent.entitlements; sourceTree = "<group>"; };
+		6B345ED42DBEB48500934607 /* OpenOneThingIntent.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = OpenOneThingIntent.entitlements; sourceTree = "<group>"; };
+		6B345ED52DBEB53600934607 /* NavigationModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NavigationModel.swift; sourceTree = "<group>"; };
+		6B345EDF2DBEC16F00934607 /* AppStateManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AppStateManager.swift; path = OneThing/OneThingGuard/Models/AppStateManager.swift; sourceTree = SOURCE_ROOT; };
+		6B345EE02DBEC16F00934607 /* GPTVisionService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = GPTVisionService.swift; path = OneThing/OneThingGuard/Models/GPTVisionService.swift; sourceTree = SOURCE_ROOT; };
+		6B345EE52DBEC3AB00934607 /* OneThingPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OneThingPickerView.swift; sourceTree = "<group>"; };
+		6B5E281A2DC4D75500A728E2 /* OneThingGuardModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OneThingGuardModel.swift; sourceTree = "<group>"; };
+		6B9F8BD32DC7E9510093FE2F /* CameraView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraView.swift; sourceTree = "<group>"; };
+		6B9F8BD52DC8C5E00093FE2F /* ScanningView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanningView.swift; sourceTree = "<group>"; };
+		6B9F8BD72DC9349C0093FE2F /* ResultsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResultsView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		6B345E9A2DBEA30300934607 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		6B345EB02DBEB28400934607 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		6B345EC22DBEB29E00934607 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -36,6 +120,8 @@
 			isa = PBXGroup;
 			children = (
 				6B345E9F2DBEA30300934607 /* OneThing */,
+				6B345EB42DBEB28400934607 /* OneThingIntent */,
+				6B345EC62DBEB29F00934607 /* OpenOneThingIntent */,
 				6B345E9E2DBEA30300934607 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -44,6 +130,8 @@
 			isa = PBXGroup;
 			children = (
 				6B345E9D2DBEA30300934607 /* OneThing.app */,
+				6B345EB32DBEB28400934607 /* OneThingIntent.appex */,
+				6B345EC52DBEB29E00934607 /* OpenOneThingIntent.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -51,6 +139,10 @@
 		6B345E9F2DBEA30300934607 /* OneThing */ = {
 			isa = PBXGroup;
 			children = (
+				6B345EDC2DBEBE1900934607 /* OneThingGuard */,
+				6B345ED52DBEB53600934607 /* NavigationModel.swift */,
+				6B345ED22DBEB45400934607 /* OneThing.entitlements */,
+				6B345EAE2DBEB1A700934607 /* Info.plist */,
 				6B345EA02DBEA30300934607 /* OneThingApp.swift */,
 				6B345EA22DBEA30300934607 /* ContentView.swift */,
 				6B345EA42DBEA30500934607 /* Assets.xcassets */,
@@ -67,6 +159,66 @@
 			path = "Preview Content";
 			sourceTree = "<group>";
 		};
+		6B345EB42DBEB28400934607 /* OneThingIntent */ = {
+			isa = PBXGroup;
+			children = (
+				6B345ED32DBEB47B00934607 /* OneThingIntent.entitlements */,
+				6B345EB52DBEB28400934607 /* OneThingIntentExtension.swift */,
+				6B345EB72DBEB28400934607 /* OneThingIntent.swift */,
+				6B345EB92DBEB28400934607 /* Info.plist */,
+			);
+			path = OneThingIntent;
+			sourceTree = "<group>";
+		};
+		6B345EC62DBEB29F00934607 /* OpenOneThingIntent */ = {
+			isa = PBXGroup;
+			children = (
+				6B345ED42DBEB48500934607 /* OpenOneThingIntent.entitlements */,
+				6B345EC72DBEB29F00934607 /* OpenOneThingIntentExtension.swift */,
+				6B345EC92DBEB29F00934607 /* OpenOneThingIntent.swift */,
+				6B345ECB2DBEB29F00934607 /* Info.plist */,
+			);
+			path = OpenOneThingIntent;
+			sourceTree = "<group>";
+		};
+		6B345EDC2DBEBE1900934607 /* OneThingGuard */ = {
+			isa = PBXGroup;
+			children = (
+				6B5E28192DC4D72400A728E2 /* ViewModels */,
+				6B5E28182DC4D71C00A728E2 /* Models */,
+				6B5E28172DC4D71600A728E2 /* Views */,
+			);
+			path = OneThingGuard;
+			sourceTree = "<group>";
+		};
+		6B5E28172DC4D71600A728E2 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				6B345EE52DBEC3AB00934607 /* OneThingPickerView.swift */,
+				6B9F8BD32DC7E9510093FE2F /* CameraView.swift */,
+				6B9F8BD52DC8C5E00093FE2F /* ScanningView.swift */,
+				6B9F8BD72DC9349C0093FE2F /* ResultsView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		6B5E28182DC4D71C00A728E2 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				6B345EE02DBEC16F00934607 /* GPTVisionService.swift */,
+				6B345EDF2DBEC16F00934607 /* AppStateManager.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		6B5E28192DC4D72400A728E2 /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				6B5E281A2DC4D75500A728E2 /* OneThingGuardModel.swift */,
+			);
+			path = ViewModels;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -77,15 +229,52 @@
 				6B345E992DBEA30300934607 /* Sources */,
 				6B345E9A2DBEA30300934607 /* Frameworks */,
 				6B345E9B2DBEA30300934607 /* Resources */,
+				6B345EC02DBEB28400934607 /* Embed ExtensionKit Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				6B345EBB2DBEB28400934607 /* PBXTargetDependency */,
+				6B345ECD2DBEB29F00934607 /* PBXTargetDependency */,
 			);
 			name = OneThing;
 			productName = OneThing;
 			productReference = 6B345E9D2DBEA30300934607 /* OneThing.app */;
 			productType = "com.apple.product-type.application";
+		};
+		6B345EB22DBEB28400934607 /* OneThingIntent */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 6B345EBD2DBEB28400934607 /* Build configuration list for PBXNativeTarget "OneThingIntent" */;
+			buildPhases = (
+				6B345EAF2DBEB28400934607 /* Sources */,
+				6B345EB02DBEB28400934607 /* Frameworks */,
+				6B345EB12DBEB28400934607 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = OneThingIntent;
+			productName = OneThingIntent;
+			productReference = 6B345EB32DBEB28400934607 /* OneThingIntent.appex */;
+			productType = "com.apple.product-type.extensionkit-extension";
+		};
+		6B345EC42DBEB29E00934607 /* OpenOneThingIntent */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 6B345ECF2DBEB29F00934607 /* Build configuration list for PBXNativeTarget "OpenOneThingIntent" */;
+			buildPhases = (
+				6B345EC12DBEB29E00934607 /* Sources */,
+				6B345EC22DBEB29E00934607 /* Frameworks */,
+				6B345EC32DBEB29E00934607 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = OpenOneThingIntent;
+			productName = OpenOneThingIntent;
+			productReference = 6B345EC52DBEB29E00934607 /* OpenOneThingIntent.appex */;
+			productType = "com.apple.product-type.extensionkit-extension";
 		};
 /* End PBXNativeTarget section */
 
@@ -98,6 +287,12 @@
 				LastUpgradeCheck = 1520;
 				TargetAttributes = {
 					6B345E9C2DBEA30300934607 = {
+						CreatedOnToolsVersion = 15.2;
+					};
+					6B345EB22DBEB28400934607 = {
+						CreatedOnToolsVersion = 15.2;
+					};
+					6B345EC42DBEB29E00934607 = {
 						CreatedOnToolsVersion = 15.2;
 					};
 				};
@@ -116,6 +311,8 @@
 			projectRoot = "";
 			targets = (
 				6B345E9C2DBEA30300934607 /* OneThing */,
+				6B345EB22DBEB28400934607 /* OneThingIntent */,
+				6B345EC42DBEB29E00934607 /* OpenOneThingIntent */,
 			);
 		};
 /* End PBXProject section */
@@ -130,6 +327,20 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		6B345EB12DBEB28400934607 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		6B345EC32DBEB29E00934607 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -137,12 +348,55 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6B9F8BD62DC8C5E00093FE2F /* ScanningView.swift in Sources */,
+				6B9F8BD82DC9349C0093FE2F /* ResultsView.swift in Sources */,
+				6B345EE62DBEC3AB00934607 /* OneThingPickerView.swift in Sources */,
 				6B345EA32DBEA30300934607 /* ContentView.swift in Sources */,
+				6B345EE22DBEC16F00934607 /* AppStateManager.swift in Sources */,
+				6B5E281E2DC4E0F700A728E2 /* OneThingIntent.swift in Sources */,
+				6B345EE32DBEC16F00934607 /* GPTVisionService.swift in Sources */,
 				6B345EA12DBEA30300934607 /* OneThingApp.swift in Sources */,
+				6B9F8BD42DC7E9510093FE2F /* CameraView.swift in Sources */,
+				6B345ED62DBEB53600934607 /* NavigationModel.swift in Sources */,
+				6B345ED92DBEBB2400934607 /* OpenOneThingIntent.swift in Sources */,
+				6B5E281B2DC4D75500A728E2 /* OneThingGuardModel.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		6B345EAF2DBEB28400934607 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6B345EB62DBEB28400934607 /* OneThingIntentExtension.swift in Sources */,
+				6B345EB82DBEB28400934607 /* OneThingIntent.swift in Sources */,
+				6B345ED72DBEB56D00934607 /* NavigationModel.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		6B345EC12DBEB29E00934607 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6B345EC82DBEB29F00934607 /* OpenOneThingIntentExtension.swift in Sources */,
+				6B345EDB2DBEBC5100934607 /* OpenOneThingIntent.swift in Sources */,
+				6B345ED82DBEB56D00934607 /* NavigationModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		6B345EBB2DBEB28400934607 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 6B345EB22DBEB28400934607 /* OneThingIntent */;
+			targetProxy = 6B345EBA2DBEB28400934607 /* PBXContainerItemProxy */;
+		};
+		6B345ECD2DBEB29F00934607 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 6B345EC42DBEB29E00934607 /* OpenOneThingIntent */;
+			targetProxy = 6B345ECC2DBEB29F00934607 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		6B345EA92DBEA30500934607 /* Debug */ = {
@@ -267,58 +521,202 @@
 		6B345EAC2DBEA30500934607 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = OneThing/OneThing.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"OneThing/Preview Content\"";
 				DEVELOPMENT_TEAM = 5BFXSF2PS6;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = OneThing/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "One Thing";
+				INFOPLIST_KEY_NSCameraUsageDescription = "One Thing needs camera access to verify your activity";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "One Thing needs photo library access to save your evidence photos";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.jasonmayo.OneThing;
+				PRODUCT_BUNDLE_IDENTIFIER = com.jasonmayo.OneThingApp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
 		6B345EAD2DBEA30500934607 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = OneThing/OneThing.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"OneThing/Preview Content\"";
 				DEVELOPMENT_TEAM = 5BFXSF2PS6;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = OneThing/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "One Thing";
+				INFOPLIST_KEY_NSCameraUsageDescription = "One Thing needs camera access to verify your activity";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "One Thing needs photo library access to save your evidence photos";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.jasonmayo.OneThing;
+				PRODUCT_BUNDLE_IDENTIFIER = com.jasonmayo.OneThingApp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
+		6B345EBE2DBEB28400934607 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = OneThingIntent/OneThingIntent.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 5BFXSF2PS6;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = OneThingIntent/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = OneThingIntent;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.jasonmayo.OneThingApp.OneThingIntent;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+		6B345EBF2DBEB28400934607 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = OneThingIntent/OneThingIntent.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 5BFXSF2PS6;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = OneThingIntent/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = OneThingIntent;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.jasonmayo.OneThingApp.OneThingIntent;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
+		6B345ED02DBEB29F00934607 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = OpenOneThingIntent/OpenOneThingIntent.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 5BFXSF2PS6;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = OpenOneThingIntent/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = OpenOneThingIntent;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.jasonmayo.OneThingApp.OpenOneThingIntent;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+		6B345ED12DBEB29F00934607 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = OpenOneThingIntent/OpenOneThingIntent.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 5BFXSF2PS6;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = OpenOneThingIntent/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = OpenOneThingIntent;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.jasonmayo.OneThingApp.OpenOneThingIntent;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};
@@ -339,6 +737,24 @@
 			buildConfigurations = (
 				6B345EAC2DBEA30500934607 /* Debug */,
 				6B345EAD2DBEA30500934607 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		6B345EBD2DBEB28400934607 /* Build configuration list for PBXNativeTarget "OneThingIntent" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				6B345EBE2DBEB28400934607 /* Debug */,
+				6B345EBF2DBEB28400934607 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		6B345ECF2DBEB29F00934607 /* Build configuration list for PBXNativeTarget "OpenOneThingIntent" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				6B345ED02DBEB29F00934607 /* Debug */,
+				6B345ED12DBEB29F00934607 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
