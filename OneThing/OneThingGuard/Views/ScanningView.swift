@@ -1,5 +1,6 @@
 import SwiftUI
 import Combine // Import Combine for ObservableObject
+import UIKit // Needed for UIImage and Haptics
 
 // ViewModel to manage the state and timer for the BottomSheet
 class BottomSheetViewModel: ObservableObject {
@@ -50,6 +51,11 @@ class BottomSheetViewModel: ObservableObject {
     }
 }
 
+// Data structure for the ripple effect
+struct Ripple: Identifiable {
+    let id = UUID()
+    let position: CGPoint
+}
 
 // Your main view
 struct ScanningPlaceholderView: View {
@@ -57,13 +63,15 @@ struct ScanningPlaceholderView: View {
     var image: UIImage?
     var activity: Activity
     
-    // Add a binding for currentView
+    // Binding for navigation state
     @Binding var currentView: ContentView.CurrentView
 
     // State variables for the scanning dots animation
     @State private var scanningDots: [ScanDot] = []
+    // State for ripple animations
+    @State private var ripples: [Ripple] = []
+    
     // Use @StateObject to create and keep the ViewModel alive
-    // It will persist even if ScanningPlaceholderView is recreated
     @StateObject private var bottomSheetViewModel = BottomSheetViewModel()
 
     // Store the dot timer cancellable instance to manage its lifecycle
@@ -71,6 +79,9 @@ struct ScanningPlaceholderView: View {
 
     // State for pulsing animation of the green dot
     @State private var pulseAnimation: Bool = false
+    
+    // Haptic Engine
+    @State private var hapticGenerator: UIImpactFeedbackGenerator? = nil
 
     var body: some View {
         ZStack {
@@ -86,102 +97,88 @@ struct ScanningPlaceholderView: View {
                     Rectangle()
                         .fill(Color.gray.opacity(0.8))
                 }
+                
+                // Ripples Layer (drawn behind dots)
+                ForEach(ripples) { ripple in
+                    RippleView(ripple: ripple)
+                        .onAppear { // Remove ripple after animation duration
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
+                                ripples.removeAll { $0.id == ripple.id }
+                            }
+                        }
+                }
 
-                // Scanning dots
+                // Scanning dots (drawn on top of ripples)
                 ForEach(scanningDots) { dot in
                     Circle()
                         .fill(Color.white)
                         .frame(width: 8, height: 8)
                         .position(dot.position)
                         .opacity(dot.opacity)
-                        // Add animation for opacity changes
                         .animation(.easeInOut(duration: 0.4), value: dot.opacity)
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity) // Make sure image ZStack fills the space
             .ignoresSafeArea() // Allow image to go edge-to-edge
 
+            // --- Status Bar --- 
             VStack {
                 HStack(spacing: 15) {
-                    
                     Circle()
                         .fill(Color.green)
                         .frame(width: 12, height: 12)
-                        .scaleEffect(pulseAnimation ? 1.25 : 1.0) // Apply pulsing effect
+                        .scaleEffect(pulseAnimation ? 1.25 : 1.0)
 
-                    // Text displaying the current status message from the ViewModel
-                    Text(bottomSheetViewModel.currentMessage) // Use the ViewModel directly
+                    Text(bottomSheetViewModel.currentMessage)
                         .font(.body)
-                        .foregroundColor(.white) // Change text to white
-                        // Ensure text updates smoothly
-                        .id("status_\(bottomSheetViewModel.currentMessageIndex)") // Use .id
-
-                  
+                        .foregroundColor(.white)
+                        .id("status_\(bottomSheetViewModel.currentMessageIndex)")
                 }
-                .padding(.horizontal, 20) // Reduced horizontal padding for capsule
-                .padding(.vertical, 10) // Reduced vertical padding for capsule
-                // Background for the sheet
-                .background(
-                    Capsule()
-                        .fill(.black.opacity(0.4)) // Semi-transparent black capsule
-                )
+                .padding(.horizontal, 20)
+                .padding(.vertical, 10)
+                .background(Capsule().fill(.black.opacity(0.4)))
                 Spacer()
-            }
-
-            
-                
-            
-
+            }.padding(.top)
+            // --- End Status Bar --- 
         }
         .onAppear {
             startScanningAnimation()
-            // Ensure the bottom sheet timer is running (it starts on init, but good practice)
-             bottomSheetViewModel.startTimer()
-
-            // Start the pulsing animation
+            bottomSheetViewModel.startTimer()
             withAnimation(Animation.easeInOut(duration: 0.8).repeatForever(autoreverses: true)) {
                 pulseAnimation.toggle()
             }
-            
-            // Start the image analysis
+            // Prepare haptics
+            if hapticGenerator == nil {
+                hapticGenerator = UIImpactFeedbackGenerator(style: .light) // .light is subtle
+                hapticGenerator?.prepare()
+            }
             analyzeImageWithGPT()
         }
         .onDisappear {
-             // Stop the dot timer when the view disappears
              stopScanningAnimation()
-             // ViewModel's deinit will handle its timer cancellation
+             // ViewModel deinit handles its timer
         }
     }
 
     // Start the scanning animation
     private func startScanningAnimation() {
-        // Clear existing dots
         scanningDots.removeAll()
-        // Invalidate previous timer if exists
+        ripples.removeAll() // Also clear ripples
         dotTimerCancellable?.invalidate()
-
-        // Add initial dots
-        addRandomDots(count: 5) // Start with a few dots
-
-        // Add dots periodically
+        
+        addRandomDots(count: 5)
+        
         dotTimerCancellable = Timer.scheduledTimer(withTimeInterval: 0.4, repeats: true) { _ in
              withAnimation(.easeInOut(duration: 0.5)) {
-                // Add new dots
                 self.addRandomDots(count: 1)
-
-                // Remove old dots if there are too many
                 if self.scanningDots.count > 15 {
                     self.scanningDots.removeFirst(1)
                 }
-
-                // Update opacity for dots animation (fade effect)
                 for i in 0..<self.scanningDots.count {
-                    // Make older dots slightly dimmer maybe? Or just random.
                     self.scanningDots[i].opacity = Double.random(in: 0.3...0.9)
                 }
             }
         }
-         // Ensure the timer runs on the main loop for UI updates
          if let timer = dotTimerCancellable {
               RunLoop.current.add(timer, forMode: .common)
          }
@@ -197,24 +194,21 @@ struct ScanningPlaceholderView: View {
     // Add random dots to the scan area
     private func addRandomDots(count: Int) {
         for _ in 0..<count {
-            // Use GeometryReader or screen bounds carefully
-            // UIScreen.main.bounds might not be accurate in all contexts (like split view)
-            // For full screen, it's generally okay.
             let screenWidth = UIScreen.main.bounds.width
-            // Adjust height calculation - maybe subtract bottom sheet height estimate?
-            let screenHeight = UIScreen.main.bounds.height - 150 // Approximate available height
-
+            let screenHeight = UIScreen.main.bounds.height - 150 // Approximate
             let randomX = CGFloat.random(in: 20...(screenWidth - 20))
-            // Ensure Y stays within the visible area above the sheet
             let randomY = CGFloat.random(in: 20...(screenHeight > 20 ? screenHeight : 20))
-
-            let newDot = ScanDot(
-                id: UUID(),
-                position: CGPoint(x: randomX, y: randomY),
-                opacity: 1.0 // Start fully opaque, timer loop will adjust
-            )
-
+            let position = CGPoint(x: randomX, y: randomY)
+            
+            let newDot = ScanDot(position: position, opacity: 1.0)
             scanningDots.append(newDot)
+            
+            // Add ripple effect
+            let newRipple = Ripple(position: position)
+            ripples.append(newRipple)
+            
+            // Trigger haptic feedback
+            hapticGenerator?.impactOccurred(intensity: 0.7) // Adjust intensity (0.0 to 1.0)
         }
     }
 
@@ -224,23 +218,38 @@ struct ScanningPlaceholderView: View {
         
         Task {
             do {
-                // Call the GPTVisionService to analyze the image
                 let (confidence, description) = try await GPTVisionService.shared.analyzeImage(image, activity: activity.name)
-                
-                // Navigate to ResultsView on the main thread
                 DispatchQueue.main.async {
-                    // Assuming currentView is passed as a binding
                     currentView = .results(isSuccess: confidence > 50, confidence: confidence, activityName: activity.name, appName: "OneThing")
                 }
             } catch {
-                // Handle error
                 print("Error analyzing image: \(error.localizedDescription)")
                 DispatchQueue.main.async {
-                    // Navigate to ResultsView with failure
                     currentView = .results(isSuccess: false, confidence: 0, activityName: activity.name, appName: "OneThing")
                 }
             }
         }
+    }
+}
+
+// View for the animated ripple effect
+struct RippleView: View {
+    let ripple: Ripple
+    @State private var scale: CGFloat = 0.1
+    @State private var opacity: Double = 1.0
+    
+    var body: some View {
+        Circle()
+            .stroke(Color.white, lineWidth: 1.5)
+            .scaleEffect(scale)
+            .opacity(opacity)
+            .position(ripple.position)
+            .onAppear { // Animate on appear
+                withAnimation(.easeOut(duration: 0.6)) {
+                    scale = 1.5 // Scale up
+                    opacity = 0 // Fade out
+                }
+            }
     }
 }
 
@@ -261,8 +270,28 @@ struct RoundedCorner: Shape {
 
 // Data structure for scanning dots
 struct ScanDot: Identifiable {
-    let id: UUID
+    let id = UUID()
     let position: CGPoint
     var opacity: Double
+}
+
+// Updated Preview provider
+struct ScanningPlaceholderView_Previews: PreviewProvider {
+    static var previews: some View {
+        // Example activity for preview
+        let previewActivity = Activity(emoji: "📚", name: "Reading")
+        // Safely unwrap the placeholder image
+        if let previewImage = UIImage(systemName: "photo") {
+            ScanningPlaceholderView(
+                image: previewImage, 
+                activity: previewActivity,
+                // Provide a constant binding with the non-nil image
+                currentView: .constant(.scanning(image: previewImage, activity: previewActivity))
+            )
+            .preferredColorScheme(.dark)
+        } else {
+            Text("Error: Could not load preview image.")
+        }
+    }
 }
 
