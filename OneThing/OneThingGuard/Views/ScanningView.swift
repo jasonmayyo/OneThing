@@ -51,12 +51,6 @@ class BottomSheetViewModel: ObservableObject {
     }
 }
 
-// Data structure for the ripple effect
-struct Ripple: Identifiable {
-    let id = UUID()
-    let position: CGPoint
-}
-
 // Your main view
 struct ScanningPlaceholderView: View {
     // The image to be displayed in the background
@@ -68,8 +62,6 @@ struct ScanningPlaceholderView: View {
 
     // State variables for the scanning dots animation
     @State private var scanningDots: [ScanDot] = []
-    // State for ripple animations
-    @State private var ripples: [Ripple] = []
     
     // Use @StateObject to create and keep the ViewModel alive
     @StateObject private var bottomSheetViewModel = BottomSheetViewModel()
@@ -85,7 +77,7 @@ struct ScanningPlaceholderView: View {
 
     var body: some View {
         ZStack {
-            // Image area with scan dots - Now the base layer
+            // Image area
             ZStack {
                 // Background image or gray placeholder
                 if let image = image {
@@ -98,24 +90,21 @@ struct ScanningPlaceholderView: View {
                         .fill(Color.gray.opacity(0.8))
                 }
                 
-                // Ripples Layer (drawn behind dots)
-                ForEach(ripples) { ripple in
-                    RippleView(ripple: ripple)
-                        .onAppear { // Remove ripple after animation duration
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
-                                ripples.removeAll { $0.id == ripple.id }
-                            }
-                        }
-                }
-
-                // Scanning dots (drawn on top of ripples)
+                // Draw Dots and Ripples together
                 ForEach(scanningDots) { dot in
-                    Circle()
-                        .fill(Color.white)
-                        .frame(width: 8, height: 8)
-                        .position(dot.position)
-                        .opacity(dot.opacity)
-                        .animation(.easeInOut(duration: 0.4), value: dot.opacity)
+                    // Use ZStack for layering: Ripple behind Dot
+                    ZStack {
+                        // The infinite ripple effect
+                        RippleView(position: dot.position)
+                        
+                        // The static white dot
+                        Circle()
+                            .fill(Color.white)
+                            .frame(width: 8, height: 8)
+                            .position(dot.position)
+                            .opacity(dot.opacity) // Still allow dot opacity to change if needed
+                            .animation(.easeInOut(duration: 0.4), value: dot.opacity)
+                    }
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity) // Make sure image ZStack fills the space
@@ -163,7 +152,6 @@ struct ScanningPlaceholderView: View {
     // Start the scanning animation
     private func startScanningAnimation() {
         scanningDots.removeAll()
-        ripples.removeAll() // Also clear ripples
         dotTimerCancellable?.invalidate()
         
         addRandomDots(count: 5)
@@ -203,10 +191,6 @@ struct ScanningPlaceholderView: View {
             let newDot = ScanDot(position: position, opacity: 1.0)
             scanningDots.append(newDot)
             
-            // Add ripple effect
-            let newRipple = Ripple(position: position)
-            ripples.append(newRipple)
-            
             // Trigger haptic feedback
             hapticGenerator?.impactOccurred(intensity: 0.7) // Adjust intensity (0.0 to 1.0)
         }
@@ -232,22 +216,24 @@ struct ScanningPlaceholderView: View {
     }
 }
 
-// View for the animated ripple effect
+// Updated View for the animated ripple effect
 struct RippleView: View {
-    let ripple: Ripple
+    let position: CGPoint // Pass position directly
     @State private var scale: CGFloat = 0.1
-    @State private var opacity: Double = 1.0
+    @State private var opacity: Double = 0.75 // Start slightly transparent
     
     var body: some View {
         Circle()
-            .stroke(Color.white, lineWidth: 1.5)
+            .stroke(Color.white.opacity(0.8), lineWidth: 1) // Thinner, slightly transparent stroke
             .scaleEffect(scale)
             .opacity(opacity)
-            .position(ripple.position)
+            .frame(width: 10, height: 10) // Base size like the CSS
+            .position(position)
             .onAppear { // Animate on appear
-                withAnimation(.easeOut(duration: 0.6)) {
-                    scale = 1.5 // Scale up
-                    opacity = 0 // Fade out
+                // Use the specific repeating animation from CSS
+                withAnimation(.easeOut(duration: 1).repeatForever(autoreverses: false)) {
+                    scale = 5.0 // Target scale (50/10)
+                    opacity = 0.0 // Target opacity
                 }
             }
     }
