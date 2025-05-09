@@ -13,6 +13,7 @@ struct OneThingApp: App {
     @StateObject private var appStateManager = AppStateManager.shared
     @StateObject private var oneThingGuardModel = OneThingGuardModel()
     @State private var currentView: ContentView.CurrentView = .oneThingPicker
+    @State private var splashAnimationFinished = false
     
     init() {
         // Enable camera usage description
@@ -31,11 +32,15 @@ struct OneThingApp: App {
     
     var body: some Scene {
         WindowGroup {
-            ContentView(currentView: $currentView)
-                .environmentObject(navigationModel)
-                .environmentObject(appStateManager)
-                .environmentObject(oneThingGuardModel)
-                .preferredColorScheme(.dark)
+            if splashAnimationFinished {
+                ContentView(currentView: $currentView)
+                    .environmentObject(navigationModel)
+                    .environmentObject(appStateManager)
+                    .environmentObject(oneThingGuardModel)
+                    .preferredColorScheme(.dark)
+            } else {
+                SplashScreenView(isAnimationComplete: $splashAnimationFinished)
+            }
         }
     }
     

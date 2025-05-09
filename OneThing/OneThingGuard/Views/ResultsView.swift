@@ -71,6 +71,10 @@ struct ResultsView: View {
                         .opacity(startSuccessAnimation ? 1 : 0)
                         .offset(y: startSuccessAnimation ? 0 : 20)
                         .animation(.easeInOut(duration: 0.6).delay(0.6), value: startSuccessAnimation)
+                        .onAppear { // Add onAppear to each reason HStack
+                            self.hapticGenerator?.impactOccurred(intensity: 2)
+                            
+                        }
                         
                     Spacer()
                     Spacer()
@@ -243,7 +247,7 @@ struct ResultsView: View {
         let columns = Array(repeating: GridItem(.flexible(), spacing: 2), count: 14) // 14 columns, small column spacing
         
         VStack(alignment: .leading, spacing: 6) { // Add spacing for title
-            Text("3 months of doing that One Thing")
+            Text("Goal: 3 months of doing One Thing daily")
                 .font(.caption)
                 .foregroundColor(.gray)
                 .padding(.leading, 5) // Align roughly with grid start
