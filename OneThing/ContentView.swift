@@ -54,12 +54,11 @@ struct ContentView: View {
     
     // Enum to manage current view
     enum CurrentView {
-        case oneThingPicker
-        case camera(activity: Activity)
-        case scanning(image: UIImage, activity: Activity)
-        case results(isSuccess: Bool, confidence: Int, activityName: String, appName: String)
-    }
-
+            case oneThingPicker
+            case camera(activity: Activity)
+            case scanning(image: UIImage, activity: Activity)
+            case results(isSuccess: Bool, confidence: Int, activityName: String, appName: String, analysisDetail: String, failureReasons: [String]?)
+        }
     // Add a Binding to accept the state from OneThingApp
     @Binding var currentView: CurrentView
     
@@ -77,9 +76,17 @@ struct ContentView: View {
                 CameraView(selectedActivity: activity, currentView: $currentView)
             case .scanning(let image, let activity):
                 ScanningPlaceholderView(image: image, activity: activity, currentView: $currentView)
-            case .results(let isSuccess, let confidence, let activityName, let appName):
-                ResultsView(isSuccess: isSuccess, confidence: confidence, activityName: activityName, appName: appName, currentView: $currentView)
-            }
+            case .results(let isSuccess, let confidence, let activityName, let appName, let analysisDetail, let failureReasons):
+                            ResultsView(
+                                isSuccess: isSuccess,
+                                confidence: confidence,
+                                activityName: activityName,
+                                appName: appName,
+                                currentView: $currentView,
+                                analysisDetail: analysisDetail,
+                                failureReasons: failureReasons
+                            )
+                        }
         }
     }
 }

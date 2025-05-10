@@ -13,10 +13,11 @@ class GPTVisionService {
     }()
 
     private let endpoint = "https://api.openai.com/v1/chat/completions"
+    private let confidenceThreshold = 50 // Define the confidence threshold
     
     private init() {}
     
-    func analyzeImage(_ image: UIImage, activity: String) async throws -> (confidence: Int, description: String) {
+    func analyzeImage(_ image: UIImage, activity: String) async throws -> (confidence: Int, isSuccess: Bool, analysisDetail: String, failureReasons: [String]?) {
         // Convert image to base64
         guard let imageData = image.jpegData(compressionQuality: 0.5) else {
             throw NSError(domain: "GPTVisionService", code: 1, userInfo: [NSLocalizedDescriptionKey: "Failed to convert image to data"])
@@ -24,6 +25,27 @@ class GPTVisionService {
         
         let base64Image = imageData.base64EncodedString()
         
+        let promptText = """
+        Analyze the provided image to determine if a person is actively engaged in the activity: \(activity).
+        Based on your analysis of the image, provide the following information in EXACTLY this format, with each item on a new line:
+
+        CONFIDENCE: [Provide a confidence percentage (0-100, just the number) that the person IS actively doing \(activity).]
+        PRIMARY_OBSERVATION: [Provide a 1-2 sentence neutral summary based on visual evidence in the image, supporting your confidence level about whether \(activity) is being performed.]
+        CRITIQUE_POINT_1: [Based on the image, provide a specific, blunt, and slightly humorous/sarcastic observation that could suggest the person isn't truly doing \(activity) or is faking it. If highly confident of success and no valid critique for this point, briefly state why it's not an issue or write 'All clear on this point.'. Style example for critiques: "We see pillows, not progress."]
+        CRITIQUE_POINT_2: [Second image-based critique point in the same style, or positive note.]
+        CRITIQUE_POINT_3: [Third image-based critique point in the same style, or positive note.]
+        CRITIQUE_POINT_4: [Fourth image-based critique point in the same style, or positive note.]
+        CRITIQUE_POINT_5: [Fifth image-based critique point in the same style, or positive note.]
+        CRITIQUE_POINT_6: [Sixth image-based critique point in the same style, or positive note.]
+        CRITIQUE_POINT_7: [Seventh image-based critique point in the same style, or positive note.]
+
+        Ensure critique points directly reference visual details (or their distinct absence) from the image when possible.
+        For critique point style, emulate these 'Gym' examples when making a negative point:
+        * "No sweat. No reps. No movement."
+        * "Your heart rate is Netflix, not cardio."
+        * "We see a couch, those don't build muscle."
+        """
+
         // Create the request
         let payload: [String: Any] = [
             "model": "gpt-4o-mini",
@@ -31,20 +53,12 @@ class GPTVisionService {
                 [
                     "role": "user",
                     "content": [
-                        [
-                            "type": "text",
-                            "text": "Carefully analyze this picture and tell me, with a confidence percentage (just the number), if this photo shows someone doing this activity: \(activity). Reply with just two lines: first line the confidence percentage (1-100), second line a brief explanation."
-                        ],
-                        [
-                            "type": "image_url",
-                            "image_url": [
-                                "url": "data:image/jpeg;base64,\(base64Image)"
-                            ]
-                        ]
+                        ["type": "text", "text": promptText],
+                        ["type": "image_url", "image_url": ["url": "data:image/jpeg;base64,\(base64Image)"]]
                     ]
                 ]
             ],
-            "max_tokens": 300
+            "max_tokens": 600 // Increased for the detailed response
         ]
         
         // Prepare the request
@@ -64,8 +78,9 @@ class GPTVisionService {
             let (data, response) = try await URLSession.shared.data(for: request)
             
             guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
-                print("API request failed with status code: \((response as? HTTPURLResponse)?.statusCode ?? 0)")
-                throw NSError(domain: "GPTVisionService", code: 3, userInfo: [NSLocalizedDescriptionKey: "API request failed"])
+                let responseBody = String(data: data, encoding: .utf8) ?? "No response body"
+                print("API request failed. Status: \((response as? HTTPURLResponse)?.statusCode ?? 0). Body: \(responseBody)")
+                throw NSError(domain: "GPTVisionService", code: 3, userInfo: [NSLocalizedDescriptionKey: "API request failed. Status: \((response as? HTTPURLResponse)?.statusCode ?? 0). Body: \(responseBody)"])
             }
             
             // Parse the response
@@ -75,36 +90,61 @@ class GPTVisionService {
                let message = firstChoice["message"] as? [String: Any],
                let content = message["content"] as? String {
                 
-                // Parse the confidence percentage from the response
-                let lines = content.split(separator: "\n")
-                if lines.isEmpty {
-                    print("Failed to parse response: No lines found")
-                    return (0, "Failed to parse response")
+                var parsedConfidence: Int = 0
+                var parsedPrimaryObservation: String = "Could not parse primary observation."
+                var parsedCritiquePoints: [String] = []
+
+                let lines = content.split(separator: "\n", omittingEmptySubsequences: true).map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
+
+                for line in lines {
+                    if line.starts(with: "CONFIDENCE:") {
+                        let valueString = line.replacingOccurrences(of: "CONFIDENCE:", with: "").trimmingCharacters(in: .whitespacesAndNewlines)
+                        let numberPattern = "\\b\\d+\\b"
+                        if let range = valueString.range(of: numberPattern, options: .regularExpression), let conf = Int(valueString[range]) {
+                            parsedConfidence = conf
+                        }
+                    } else if line.starts(with: "PRIMARY_OBSERVATION:") {
+                        parsedPrimaryObservation = String(line.replacingOccurrences(of: "PRIMARY_OBSERVATION:", with: "").trimmingCharacters(in: .whitespacesAndNewlines))
+                    } else if line.starts(with: "CRITIQUE_POINT_") { // Catches CRITIQUE_POINT_1: through CRITIQUE_POINT_7:
+                        let components = line.split(separator: ":", maxSplits: 1)
+                        if components.count == 2 {
+                            let critique = String(components[1]).trimmingCharacters(in: .whitespacesAndNewlines)
+                            // Avoid adding placeholder/positive notes as actual failure reasons if they are too generic
+                            let positivePlaceholders = ["all clear", "looks good", "no issues noted", "not an issue", "n/a"]
+                            let isPlaceholder = positivePlaceholders.contains { placeholder in critique.lowercased().contains(placeholder) }
+                            
+                            if !critique.isEmpty && !isPlaceholder {
+                                parsedCritiquePoints.append(critique)
+                            } else if !critique.isEmpty && parsedConfidence >= confidenceThreshold { 
+                                // If confidence is high, we might still want to see what it said for context, even if positive.
+                                // For now, we only collect actual critiques for the failureReasons array.
+                                // This part can be adjusted if we want to store all 7 remarks regardless.
+                            }
+                        }
+                    }
                 }
                 
-                let confidenceString = lines[0].trimmingCharacters(in: .whitespacesAndNewlines)
-                let description = lines.count > 1 ? String(lines[1]) : "No description provided"
-                
-                // Extract just the number from the confidence string
-                let numberPattern = "\\b\\d+\\b"
-                let regex = try NSRegularExpression(pattern: numberPattern)
-                let range = NSRange(confidenceString.startIndex..., in: confidenceString)
-                
-                if let match = regex.firstMatch(in: confidenceString, range: range),
-                   let matchRange = Range(match.range, in: confidenceString),
-                   let confidence = Int(confidenceString[matchRange]) {
-                    return (confidence, description)
+                if parsedPrimaryObservation.isEmpty { // Fallback if parsing somehow misses it
+                    parsedPrimaryObservation = "Analysis complete."
                 }
-                
-                print("Failed to parse confidence from response")
-                return (0, "Failed to parse confidence")
+
+                if parsedConfidence < confidenceThreshold {
+                    // If no specific critiques were parsed but confidence is low, add a generic one.
+                    if parsedCritiquePoints.isEmpty {
+                        parsedCritiquePoints.append("Overall image does not convincingly show the activity.")
+                    }
+                    return (parsedConfidence, false, parsedPrimaryObservation, parsedCritiquePoints.prefix(7).map { String($0) })
+                } else {
+                    return (parsedConfidence, true, parsedPrimaryObservation, nil) // No failure reasons needed for success
+                }
             }
             
-            print("Failed to parse response: JSON structure unexpected")
-            return (0, "Failed to parse response")
+            let responseBody = String(data: data, encoding: .utf8) ?? "Invalid data"
+            print("Failed to parse JSON response. Body: \(responseBody)")
+            throw NSError(domain: "GPTVisionService", code: 4, userInfo: [NSLocalizedDescriptionKey: "Failed to parse JSON response. Body: \(responseBody)"])
         } catch {
             print("Error during API request: \(error.localizedDescription)")
-            throw NSError(domain: "GPTVisionService", code: 4, userInfo: [NSLocalizedDescriptionKey: "Failed to parse response: \(error.localizedDescription)"])
+            throw NSError(domain: "GPTVisionService", code: 5, userInfo: [NSLocalizedDescriptionKey: "Failed to parse response: \(error.localizedDescription)"])
         }
     }
 } 

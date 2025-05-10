@@ -154,14 +154,39 @@ struct ScanningPlaceholderView: View {
         
         Task {
             do {
-                let (confidence, description) = try await GPTVisionService.shared.analyzeImage(image, activity: activity.name)
+                // Capture all four values from GPTVisionService
+                let (confidence, isSuccess, analysisDetail, failureReasons) = try await GPTVisionService.shared.analyzeImage(image, activity: activity.name)
+                
+                // Retrieve appName from UserDefaults (adjust key as needed)
+                let appName = UserDefaults.standard.string(forKey: "LastGuardedApp") ?? "SomeApp"
+                
                 DispatchQueue.main.async {
-                    currentView = .results(isSuccess: confidence > 50, confidence: confidence, activityName: activity.name, appName: "OneThing")
+                    // Update currentView with all parameters
+                    currentView = .results(
+                        isSuccess: isSuccess,
+                        confidence: confidence,
+                        activityName: activity.name,
+                        appName: appName,
+                        analysisDetail: analysisDetail,
+                        failureReasons: failureReasons
+                    )
                 }
             } catch {
                 print("Error analyzing image: \(error.localizedDescription)")
+                
+                // Retrieve appName from UserDefaults
+                let appName = UserDefaults.standard.string(forKey: "LastGuardedApp") ?? "SomeApp"
+                
                 DispatchQueue.main.async {
-                    currentView = .results(isSuccess: false, confidence: 0, activityName: activity.name, appName: "OneThing")
+                    // Handle error with meaningful defaults
+                    currentView = .results(
+                        isSuccess: false,
+                        confidence: 0,
+                        activityName: activity.name,
+                        appName: appName,
+                        analysisDetail: "Error analyzing image.",
+                        failureReasons: ["Unable to analyze the image. Please try again."]
+                    )
                 }
             }
         }

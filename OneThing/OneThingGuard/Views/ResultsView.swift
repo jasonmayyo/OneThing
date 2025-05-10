@@ -14,6 +14,11 @@ struct ResultsView: View {
     var activityName: String
     var appName: String
     @Binding var currentView: ContentView.CurrentView
+
+    // NEW: To hold data from GPTVisionService
+    var analysisDetail: String
+    var failureReasons: [String]?
+
     @State private var showContent: Bool = false
     
     // Haptic Engine
@@ -133,29 +138,39 @@ struct ResultsView: View {
                         .foregroundColor(.gray)
                         .multilineTextAlignment(.center)
                         .padding(.horizontal, 40)
-                        .opacity(showContent ? 1 : 0)
-                        .offset(y: showContent ? 0 : 20)
-                        .animation(.easeInOut(duration: 1.5).delay(0.3), value: showContent)
+                        // Use the dynamic analysisDetail from GPTVisionService
+                        .overlay(Text(self.analysisDetail)
+                                    .font(.subheadline)
+                                    .foregroundColor(.gray)
+                                    .multilineTextAlignment(.center)
+                                    .padding(.horizontal, 40)
+                                    .opacity(showContent ? 1 : 0)
+                                    .offset(y: showContent ? 0 : 20)
+                                    .animation(.easeInOut(duration: 1.5).delay(0.3), value: showContent)
+                        )
+                        .opacity(0) // Keep original text, but hide it, overlay new one for animation
                         .padding(.bottom, 30)
                     
                     
                     VStack() {
                         
                            
+                        // Use actual failureReasons from GPTVisionService
+                        let actualReasonsToShow = self.failureReasons ?? []
                         
                         // Placeholder reasons list
-                        let reasons = [
-                            "No sweat. No reps. No movement.",
-                            "Your heart rate is Netflix, not cardio.",
-                            "We see a couch, those don't build muscle.",
-                            "We checked the background. Zero gym vibes.",
-                            "We see pillows, not progress.",
-                            "You dont have any gym wear on.",
-                            "You're not even sweating.",
-                        ]
+                        // let reasons = [
+                        //     "No sweat. No reps. No movement.",
+                        //     "Your heart rate is Netflix, not cardio.",
+                        //     "We see a couch, those don't build muscle.",
+                        //     "We checked the background. Zero gym vibes.",
+                        //     "We see pillows, not progress.",
+                        //     "You dont have any gym wear on.",
+                        //     "You're not even sweating.",
+                        // ]
                         
-                        ForEach(reasons.indices, id: \.self) { index in
-                            let reason = reasons[index]
+                        ForEach(actualReasonsToShow.indices, id: \.self) { index in
+                            let reason = actualReasonsToShow[index]
                             HStack(spacing: 12) {
                                 Image(systemName: "minus.circle.fill")
                                     .foregroundColor(.red)
@@ -306,8 +321,27 @@ struct ResultsView: View {
     // Preview both states
     Group {
         // Success Case Preview
-        ResultsView(isSuccess: false, confidence: 18, activityName: "gyming", appName: "Instagram", currentView: .constant(.oneThingPicker))
+        ResultsView(isSuccess: true, 
+                    confidence: 85, 
+                    activityName: "Reading", 
+                    appName: "YouTube", 
+                    currentView: .constant(.oneThingPicker),
+                    analysisDetail: "The user appears to be holding a book and focusing.",
+                    failureReasons: nil)
 
-        
+        // Failure Case Preview
+        ResultsView(isSuccess: false, 
+                    confidence: 18, 
+                    activityName: "Gym", 
+                    appName: "Instagram", 
+                    currentView: .constant(.oneThingPicker),
+                    analysisDetail: "The image shows a person on a couch, not gym equipment.",
+                    failureReasons: ["We see a couch, not a bench press.", 
+                                     "Your cat seems more active in the background.", 
+                                     "Those look like slippers, not trainers.",
+                                     "Is that a remote control in your hand?",
+                                     "Zero sign of sweat. Impressive, for a couch session.",
+                                     "The lighting suggests nap time, not workout time.",
+                                     "The only weight being lifted is the TV guide."])
     }
 }
