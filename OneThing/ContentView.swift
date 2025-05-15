@@ -68,27 +68,14 @@ struct ContentView: View {
     }
     
     var body: some View {
-        VStack {
-            switch currentView {
-            case .oneThingPicker:
-                OneThingPickerView(currentView: $currentView)
-            case .camera(let activity):
-                CameraView(selectedActivity: activity, currentView: $currentView)
-            case .scanning(let image, let activity):
-                ScanningPlaceholderView(image: image, activity: activity, currentView: $currentView)
-            case .results(let isSuccess, let confidence, let activityName, let appName, let analysisDetail, let failureReasons):
-                            ResultsView(
-                                isSuccess: isSuccess,
-                                confidence: confidence,
-                                activityName: activityName,
-                                appName: appName,
-                                currentView: $currentView,
-                                analysisDetail: analysisDetail,
-                                failureReasons: failureReasons
-                            )
-                        }
+            Group {
+                if navigationModel.currentDestination == .oneThingGuardFlowView {
+                    OneThingGuardFlowView()
+                } else {
+                    MainTabView()
+                }
+            }
         }
-    }
 }
 
 

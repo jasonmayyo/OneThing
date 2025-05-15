@@ -33,11 +33,11 @@ struct OneThingApp: App {
     var body: some Scene {
         WindowGroup {
             if splashAnimationFinished {
-                ContentView(currentView: $currentView)
-                    .environmentObject(navigationModel)
-                    .environmentObject(appStateManager)
-                    .environmentObject(oneThingGuardModel)
-                    .preferredColorScheme(.dark)
+            ContentView(currentView: $currentView)
+                .environmentObject(navigationModel)
+                .environmentObject(appStateManager)
+                .environmentObject(oneThingGuardModel)
+                .preferredColorScheme(.dark)
             } else {
                 SplashScreenView(isAnimationComplete: $splashAnimationFinished)
             }

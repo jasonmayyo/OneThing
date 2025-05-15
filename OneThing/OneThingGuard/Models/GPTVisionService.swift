@@ -41,9 +41,9 @@ class GPTVisionService {
 
         Ensure critique points directly reference visual details (or their distinct absence) from the image when possible.
         For critique point style, emulate these 'Gym' examples when making a negative point:
-        * "No sweat. No reps. No movement."
-        * "Your heart rate is Netflix, not cardio."
-        * "We see a couch, those don't build muscle."
+        * No sweat. No reps. No movement.
+        * Your heart rate is Netflix, not cardio.
+        * We see a couch, those don't build muscle.
         """
 
         // Create the request

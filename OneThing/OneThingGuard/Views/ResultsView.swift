@@ -28,6 +28,17 @@ struct ResultsView: View {
     @State private var startSuccessAnimation: Bool = false // Consolidated animation trigger
     @State private var dayStreak: Int = 3 // Placeholder for streak data
     
+    // Add new animation states
+    @State private var flameScale: CGFloat = 0.1
+    @State private var flameOpacity: Double = 0
+    @State private var pulseScale: CGFloat = 1.0
+    @State private var pulseOpacity: Double = 0
+    @State private var showFinalContent: Bool = false
+    
+    // Add new animation states for vibration
+    @State private var flameRotation: Double = 0
+    @State private var flameVibration: Bool = false
+    
     var body: some View {
         ZStack {
             // Background Color
@@ -35,92 +46,146 @@ struct ResultsView: View {
             
             if isSuccess {
                 // --- Success View --- 
-                VStack() {
-                    Spacer()
+                ZStack {
+                    // Pulse Effect (Full Screen)
+                    Circle()
+                        .fill(
+                            RadialGradient(
+                                gradient: Gradient(colors: [
+                                    Color.orange.opacity(0.8),
+                                    Color.orange.opacity(0.4),
+                                    Color.orange.opacity(0.0)
+                                ]),
+                                center: .center,
+                                startRadius: 0,
+                                endRadius: 200
+                            )
+                        )
+                        .scaleEffect(pulseScale)
+                        .opacity(pulseOpacity)
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                        .edgesIgnoringSafeArea(.all)
+                        .opacity(showFinalContent ? 0 : 1)
                     
-                    // Fire Emoji
-                    Text("🔥")
-                        .font(.system(size: 150))
-                        .scaleEffect(startSuccessAnimation ? 1 : 0.1)
-                        .rotationEffect(startSuccessAnimation ? .degrees(0) : .degrees(-20))
-                        .opacity(startSuccessAnimation ? 1 : 0)
-                        .shadow(color: .orange.opacity(0.7), radius: startSuccessAnimation ? 85 : 0, x: 0, y: 0)
-                        .animation(.interpolatingSpring(stiffness: 100, damping: 10).delay(0.2), value: startSuccessAnimation)
-                    
-                    VStack(spacing: 0) {
-                        // Day Streak Number
-                        Text("\(dayStreak)") // Use streak variable
-                            .font(.system(size: 80, weight: .black))
-                            .foregroundColor(.white)
-                            .padding(.bottom, -10) // Apply negative bottom padding
-                            .opacity(startSuccessAnimation ? 1 : 0)
-                            .offset(y: startSuccessAnimation ? 0 : 20)
-                            .animation(.easeInOut(duration: 0.6).delay(0.4), value: startSuccessAnimation)
-                        
-                        // Day Streak Label
-                        Text("DAY STREAK")
-                            .font(.title)
-                            .foregroundColor(.white)
-                            .bold()
-                            .opacity(startSuccessAnimation ? 1 : 0)
-                            .offset(y: startSuccessAnimation ? 0 : 20)
-                            .animation(.easeInOut(duration: 0.6).delay(0.5), value: startSuccessAnimation)
+                    // Initial Flame View
+                    if !showFinalContent {
+                        Text("🔥")
+                            .font(.system(size: 150))
+                            .scaleEffect(flameScale)
+                            .rotationEffect(.degrees(flameScale == 1 ? 0 : -20))
+                            .opacity(flameOpacity)
+                            .shadow(color: .orange.opacity(0.7), radius: flameScale == 1 ? 85 : 0)
                     }
                     
-                    
-                    Spacer()
-                    
-                    // Contribution Grid
-                    contributionGridView()
-                        .padding(.horizontal, 20)
-                        .opacity(startSuccessAnimation ? 1 : 0)
-                        .offset(y: startSuccessAnimation ? 0 : 20)
-                        .animation(.easeInOut(duration: 0.6).delay(0.6), value: startSuccessAnimation)
-                        .onAppear { // Add onAppear to each reason HStack
-                            self.hapticGenerator?.impactOccurred(intensity: 2)
+                    // Final Content
+                    VStack {
+                        if showFinalContent {
+                            Spacer()
                             
-                        }
-                        
-                    Spacer()
-                    Spacer()
-                    
-                    // Unlock Button (Same as before, just styled)
-                    HStack {
-                        Spacer()
-                        Button(action: {
-                            print("Unlock \(appName)")
-                            let currentTime = Date().timeIntervalSince1970
-                            let sharedDefaults = UserDefaults(suiteName: "group.com.jasonmayo.OneThingApp")
-                            sharedDefaults?.set(currentTime, forKey: "LastBreakTime")
-                            sharedDefaults?.set(true, forKey: "UserAllowedBreak")
-                            sharedDefaults?.synchronize()
+                            // Final Flame
+                            Text("🔥")
+                                .font(.system(size: 120))
+                                .shadow(color: .orange.opacity(0.7), radius: 40)
+                                .opacity(showFinalContent ? 1 : 0)
+                                .offset(y: showFinalContent ? 0 : 20)
                             
-                            if let appName = sharedDefaults?.string(forKey: "LastGuardedApp") {
-                                UIApplication.shared.open(getAppURL(for: appName), options: [:])
+                            // Day Streak Number
+                            Text("\(dayStreak)")
+                                .font(.system(size: 80, weight: .black))
+                                .foregroundColor(.white)
+                                .padding(.bottom, -10)
+                                .opacity(showFinalContent ? 1 : 0)
+                                .offset(y: showFinalContent ? 0 : 20)
+                            
+                            // Day Streak Label
+                            Text("DAY STREAK")
+                                .font(.title)
+                                .foregroundColor(.white)
+                                .bold()
+                                .opacity(showFinalContent ? 1 : 0)
+                                .offset(y: showFinalContent ? 0 : 20)
+                            
+                            Spacer()
+                            
+                            // Contribution Grid
+                            contributionGridView()
+                                .padding(.horizontal, 20)
+                                .opacity(showFinalContent ? 1 : 0)
+                                .offset(y: showFinalContent ? 0 : 20)
+                            
+                            Spacer()
+                            Spacer()
+                            
+                            // Unlock Button
+                            HStack {
+                                Spacer()
+                                Button(action: {
+                                    print("Unlock \(appName)")
+                                    let currentTime = Date().timeIntervalSince1970
+                                    let sharedDefaults = UserDefaults(suiteName: "group.com.jasonmayo.OneThingApp")
+                                    sharedDefaults?.set(currentTime, forKey: "LastBreakTime")
+                                    sharedDefaults?.set(true, forKey: "UserAllowedBreak")
+                                    sharedDefaults?.synchronize()
+                                    
+                                    if let appName = sharedDefaults?.string(forKey: "LastGuardedApp") {
+                                        UIApplication.shared.open(getAppURL(for: appName), options: [:])
+                                    }
+
+                                    NavigationModel.shared.navigate(to: .oneThingView)
+                                }) {
+                                    Text("Unlock \(appName)")
+                                        .font(.headline)
+                                        .fontWeight(.medium)
+                                        .foregroundColor(.black)
+                                        .frame(maxWidth: .infinity)
+                                        .padding()
+                                        .background(Color.white)
+                                        .cornerRadius(10)
+                                }
+                                .opacity(showFinalContent ? 1 : 0)
+                                Spacer()
                             }
-                            // Dismiss view? Decide navigation
-                            // currentView = .someOtherView // Or maybe dismiss if presented modally
-                        }) {
-                            Text("Unlock \(appName)")
-                                .font(.headline)
-                                .fontWeight(.medium)
-                                .foregroundColor(.black)
-                                .frame(maxWidth: .infinity)
-                                .padding()
-                                .background(Color.white)
-                                .cornerRadius(10)
+                            .padding()
+                            .opacity(showFinalContent ? 1 : 0)
                         }
-                        Spacer()
-                    }.padding()
-                    
+                    }
                 }
                 .onAppear {
-                    // Tiny delay ensures view is ready before animating
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                        startSuccessAnimation = true
+                    // Prepare haptic generator
+                    hapticGenerator = UIImpactFeedbackGenerator(style: .heavy)
+                    hapticGenerator?.prepare()
+                    
+                    // Initial flame animation
+                    withAnimation(.interpolatingSpring(stiffness: 100, damping: 10).delay(0.2)) {
+                        flameScale = 1.0
+                        flameOpacity = 1.0
                     }
-                } 
-                 
+                    
+                    // Trigger haptic feedback when pulse begins
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
+                        hapticGenerator?.impactOccurred(intensity: 1.0)
+                    }
+                    
+                    // Quick pulse animation
+                    withAnimation(.easeOut(duration: 0.8).delay(0.4)) {
+                        pulseScale = 3.0
+                        pulseOpacity = 0.8
+                    }
+                    
+                    // Start slow fade out
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                        withAnimation(.easeOut(duration: 0.8)) {
+                            flameOpacity = 0
+                        }
+                    }
+                    
+                    // Show final content after animations
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 1.8) {
+                        withAnimation(.easeInOut(duration: 0.6)) {
+                            showFinalContent = true
+                        }
+                    }
+                }
             } else {
                 // --- New Failure View --- 
                 VStack() {
@@ -329,19 +394,5 @@ struct ResultsView: View {
                     analysisDetail: "The user appears to be holding a book and focusing.",
                     failureReasons: nil)
 
-        // Failure Case Preview
-        ResultsView(isSuccess: false, 
-                    confidence: 18, 
-                    activityName: "Gym", 
-                    appName: "Instagram", 
-                    currentView: .constant(.oneThingPicker),
-                    analysisDetail: "The image shows a person on a couch, not gym equipment.",
-                    failureReasons: ["We see a couch, not a bench press.", 
-                                     "Your cat seems more active in the background.", 
-                                     "Those look like slippers, not trainers.",
-                                     "Is that a remote control in your hand?",
-                                     "Zero sign of sweat. Impressive, for a couch session.",
-                                     "The lighting suggests nap time, not workout time.",
-                                     "The only weight being lifted is the TV guide."])
     }
 }

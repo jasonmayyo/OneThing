@@ -15,7 +15,7 @@ struct OpenOneThingIntent: AppIntent {
     
     func perform() async throws -> some IntentResult & ReturnsValue<Bool> {
         print("OpenOneThingIntent: Attempting to perform")
-        NavigationModel.shared.navigate(to: .oneThingView)
+        NavigationModel.shared.navigate(to: .oneThingGuardFlowView)
         return .result(value: true)
     }
 }

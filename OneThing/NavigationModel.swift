@@ -3,6 +3,7 @@ import SwiftUI
 
 enum NavigationDestination {
     case oneThingView
+    case oneThingGuardFlowView
 }
 
 class NavigationModel: ObservableObject {
