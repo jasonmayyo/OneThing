@@ -51,6 +51,8 @@ struct ContentView: View {
     @EnvironmentObject var navigationModel: NavigationModel
     @StateObject private var appStateManager = AppStateManager.shared
     @AppStorage("lastSelectionDate") private var lastSelectionTimeStamp: Double = 0
+
+    @State private var showSplash = false
     
     // Enum to manage current view
     enum CurrentView {
@@ -71,6 +73,17 @@ struct ContentView: View {
             Group {
                 if navigationModel.currentDestination == .oneThingGuardFlowView {
                     OneThingGuardFlowView()
+                    .fullScreenCover(isPresented: $showSplash) {
+                        SplashScreenView(isAnimationComplete: Binding(
+                            get: { !showSplash },
+                            set: { completed in
+                                if completed { showSplash = false }
+                            }
+                        ))
+                    }
+                    .onAppear {
+                        showSplash = true
+                    }
                 } else {
                     MainTabView()
                 }

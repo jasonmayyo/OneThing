@@ -63,7 +63,7 @@ struct HomeView: View {
         ZStack {
             Color.black.edgesIgnoringSafeArea(.all)
             ScrollView {
-                VStack(alignment: .leading, spacing: 10) {
+                VStack(alignment: .leading) {
                     // Top Row
                     HStack {
                         VStack(alignment: .leading) {
@@ -239,7 +239,9 @@ struct HomeView: View {
                         }
                         .frame(height: 210)
                     }
-                    .padding(.horizontal)
+                    .padding(.leading)
+                    .padding(.bottom)
+                   
 
                     ContributionGridView(filledCells: 3)
                         .padding(.horizontal)

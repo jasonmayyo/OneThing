@@ -1,16 +1,6 @@
 import SwiftUI
 
 struct SplashScreenView: View {
-    @State private var scribblePoints: [CGPoint] = []
-    @State private var isScribbling = false
-    @State private var currentScribbleSegmentIndex = 0 // Renamed for clarity
-    @State private var actualTotalSegments = 0          // Will be set based on actual points
-    // private let totalScribbleSegments = 100 // This will be dynamic now
-    private let animationTimer = Timer.publish(every: 0.03, on: .main, in: .common).autoconnect() // Faster timer
-
-    @State private var scribbleOrigin: CGPoint = .zero // Will be screen center for the ball
-    @State private var scribbleOpacity: Double = 1.0 // For fading out the scribble
-
     // Placeholder for the final logo (circle)
     @State private var showLogo = false
     @State private var logoScale: CGFloat = 0.01
@@ -24,7 +14,7 @@ struct SplashScreenView: View {
     @State private var pulseHapticTrigger: Int = 0 // For triggering haptic feedback
     @Binding var isAnimationComplete: Bool // Binding to notify when animation is done
 
-    init(isAnimationComplete: Binding<Bool>) { // Add initializer for the binding
+    init(isAnimationComplete: Binding<Bool>) {
         self._isAnimationComplete = isAnimationComplete
     }
 
@@ -33,99 +23,7 @@ struct SplashScreenView: View {
             ZStack {
                 Color.black.edgesIgnoringSafeArea(.all)
 
-                // Scribble Path - using Chaikin-like algorithm for smoothing
-                Path { path in
-                    guard scribblePoints.count >= 2 else {
-                        if let p0 = scribblePoints.first { path.move(to: p0) }
-                        return
-                    }
-
-                    if scribblePoints.count < 3 { // Not enough points for the main curve logic, just draw a line
-                        path.move(to: scribblePoints[0])
-                        path.addLine(to: scribblePoints[1])
-                        return
-                    }
-
-                    // Start at the first point
-                    path.move(to: scribblePoints[0])
-                    // Line to the midpoint of the first segment P0-P1
-                    let firstMidPoint = CGPoint(x: (scribblePoints[0].x + scribblePoints[1].x) / 2, y: (scribblePoints[0].y + scribblePoints[1].y) / 2)
-                    path.addLine(to: firstMidPoint)
-
-                    // For points P_i, P_{i+1}, P_{i+2}, the curve is from Mid(P_i, P_{i+1}) to Mid(P_{i+1}, P_{i+2}) using P_{i+1} as control.
-                    // Loop until the point before the last segment, as we need three points (i, i+1, i+2)
-                    for i in 0..<(scribblePoints.count - 2) {
-                        let p_control = scribblePoints[i+1] // This is the control point P_{i+1}
-                        let p_next_segment_end = scribblePoints[i+2]
-                        
-                        // The destination of this curve is the midpoint of the segment p_control to p_next_segment_end
-                        let midPointNext = CGPoint(x: (p_control.x + p_next_segment_end.x) / 2, y: (p_control.y + p_next_segment_end.y) / 2)
-                        path.addQuadCurve(to: midPointNext, control: p_control)
-                    }
-
-                    // Line from the last midpoint curve ended at, to the very last point P_n
-                    // The last curve ended at Mid(P(n-2), P(n-1)). We need to connect to P(n-1).
-                    // (Corrected: last point is scribblePoints.last!, not scribblePoints[count-2])
-                    // The loop goes up to i = count - 3.
-                    // Last iteration: i = count - 3. p_control = P(count-2), p_next_segment_end = P(count-1).
-                    // Curve ends at Mid(P(count-2), P(count-1)).
-                    path.addLine(to: scribblePoints.last!)
-                }
-                .trim(from: 0, to: actualTotalSegments > 0 ? CGFloat(currentScribbleSegmentIndex) / CGFloat(actualTotalSegments) : 0)
-                .stroke(Color.white, style: StrokeStyle(lineWidth: 2, lineCap: .round, lineJoin: .round))
-                .opacity(scribbleOpacity) // Apply opacity to the scribble path
-                .frame(width: geometry.size.width, height: geometry.size.height)
-                .onAppear {
-                    // Scribble ball forms in the center of the screen
-                    self.scribbleOrigin = CGPoint(x: geometry.size.width / 2, y: geometry.size.height / 2)
-                    
-                    // Line starts from the very left edge, vertically centered
-                    let leftEdgeStart = CGPoint(x: 0, y: geometry.size.height / 2)
-                    
-                    self.scribblePoints = [leftEdgeStart, self.scribbleOrigin] // Initial path: edge to center
-                    
-                    // Generate points for the scribble ball around the center origin
-                    let numberOfBallPoints = 50 // Reduced number of points for a shorter, less dense scribble
-                    let ballMaxRadius = min(geometry.size.width, geometry.size.height) / 4 // Radius for the ball
-                    generateScribblePoints(center: self.scribbleOrigin, count: numberOfBallPoints, maxRadius: ballMaxRadius)
-                    
-                    self.actualTotalSegments = self.scribblePoints.count > 1 ? self.scribblePoints.count - 1 : 0
-                    self.currentScribbleSegmentIndex = 0 // Reset animation index
-                    self.scribbleOpacity = 1.0 // Ensure scribble is visible initially
-                    self.showLogo = false      // Ensure logo is hidden initially
-                    self.logoOpacity = 0.0
-                    self.logoScale = 0.01
-                    self.pulseScale = 1.0
-                    self.pulseOpacity = 0.0
-                    self.logoMainGlowRadius = 0 // Reset glow
-                    self.logoMainGlowOpacity = 0.0 // Reset glow
-                    self.pulseHapticTrigger = 0 // Reset haptic trigger
-
-                    self.isScribbling = true
-                }
-                .onReceive(animationTimer) { _ in
-                    if isScribbling {
-                        if self.currentScribbleSegmentIndex < self.actualTotalSegments {
-                            self.currentScribbleSegmentIndex += 1
-                        } else {
-                            isScribbling = false
-                            // Start transition to logo
-                            withAnimation(.easeIn(duration: 0.5)) {
-                                showLogo = true
-                                logoOpacity = 1.0
-                                logoScale = 1.0
-                                scribbleOpacity = 0.0 // Fade out scribble as logo appears
-                                // Initial glow appearance
-                                logoMainGlowRadius = 10
-                                logoMainGlowOpacity = 0.5
-                            }
-                            // Then start ripple & glow, then shrink
-                            startLogoAnimationSequence()
-                        }
-                    }
-                }
-
-                // Logo (Circle for now)
+                // Only show the logo and pulse (no scribble)
                 if showLogo {
                     // Pulse Circle (underneath the main logo)
                     Circle()
@@ -145,36 +43,20 @@ struct SplashScreenView: View {
                         .position(x: geometry.size.width / 2, y: geometry.size.height / 2)
                 }
             }
-            .sensoryFeedback(.impact(weight: .heavy), trigger: pulseHapticTrigger) // Heavy vibration on pulse
+            .onAppear {
+                // Immediately show the logo and start the animation sequence
+                self.showLogo = true
+                self.logoOpacity = 1.0
+                self.logoScale = 1.0
+                self.pulseScale = 1.0
+                self.pulseOpacity = 0.0
+                self.logoMainGlowRadius = 10
+                self.logoMainGlowOpacity = 0.5
+                self.pulseHapticTrigger = 0
+                startLogoAnimationSequence()
+            }
+            .sensoryFeedback(.impact(weight: .heavy), trigger: pulseHapticTrigger)
         }
-    }
-
-    func generateScribblePoints(center: CGPoint, count: Int, maxRadius: CGFloat) {
-        // 'points' are generated relative to 'center', these will be appended to self.scribblePoints
-        // The first point of the ball segment could be considered 'center' itself or points starting around it.
-        // This function generates `count` additional points around `center`.
-        var localPoints: [CGPoint] = []
-        var lastAngle: CGFloat = CGFloat.random(in: 0...(2 * .pi)) // Start with a random angle
-
-        for i in 0..<count {
-            // Make radius grow but also have some randomness to fill the "ball"
-            let radiusFactor = CGFloat(i + 1) / CGFloat(count) // 0 to 1
-            let currentRadius = maxRadius * (0.3 + radiusFactor * 0.7) * (0.8 + CGFloat.random(in: 0...0.4))
-
-
-            // Ensure the angle changes significantly but not too erratically for a scribble
-            let angleChange = CGFloat.random(in: -CGFloat.pi/1.2...CGFloat.pi/1.2) // Wider, more chaotic turns
-            lastAngle += angleChange
-
-            // Add some spiraling effect, can be minor for a dense scribble
-            let spiralFactor: CGFloat = 0.1 // How much it spirals
-            let angle = lastAngle + spiralFactor * CGFloat(i)
-
-            let x = center.x + cos(angle) * currentRadius
-            let y = center.y + sin(angle) * currentRadius
-            localPoints.append(CGPoint(x: x, y: y))
-        }
-        self.scribblePoints.append(contentsOf: localPoints)
     }
 
     func startLogoAnimationSequence() {
